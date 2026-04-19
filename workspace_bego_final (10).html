@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bego — Workspace</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F0EEF8;--s:#FFFFFF;--s2:#F4F2FC;--s3:#EAE8F5;
+  --b:#DDD9F0;--b2:#C4BFE8;--b3:#A9A2D8;
+  --t:#1A1530;--t2:#5A5680;--t3:#9A97B8;
+  --ac:#2E7D5E;--acl:#E8F5F0;--acm:#3A9970;
+  --ac2:#D4600A;--ac2l:#FDF0E6;
+  --bl:#2952B8;--bll:#EBF0FA;
+  --re:#B81A1A;--rel:#FDF0F0;
+  --am:#8C6A10;--aml:#FDF8E6;
+  --pu:#6A2EB8;--pul:#F2EEFB;
+  --r:8px;--rl:14px;--rxl:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t);font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex}
+
+/* SIDEBAR */
+.sb{width:220px;background:linear-gradient(180deg,#1A1535 0%,#2A1F5A 60%,#1E2D6E 100%);border-right:none;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.sb-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sb-logo .n{font-size:16px;font-weight:600;letter-spacing:-.4px;color:#FFFFFF}
+.sb-logo .s{font-size:10px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;margin-top:3px;letter-spacing:.3px}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto}
+.sb-nav::-webkit-scrollbar{width:3px}
+.sb-nav::-webkit-scrollbar-thumb{background:var(--b2);border-radius:10px}
+.nl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.65);font-size:13px;font-weight:400;margin-bottom:1px;transition:all .12s;user-select:none}
+.ni:hover{background:rgba(255,255,255,.1);color:#FFFFFF}
+.ni.active{background:rgba(255,255,255,.15);color:#FFFFFF;font-weight:500;border-left:3px solid #7EE8B0;padding-left:7px}
+
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.12);font-size:10px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--s);border-bottom:1px solid var(--b);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tb-title{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.tb-actions{display:flex;gap:8px;align-items:center}
+.content{flex:1;overflow-y:auto;padding:22px 24px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--b2);border-radius:10px}
+
+/* BUTTONS */
+.btn{padding:7px 13px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;border:1px solid var(--b2);background:var(--s);color:var(--t);transition:all .12s}
+.btn:hover{background:var(--s2);border-color:var(--b3)}
+.btn-p{background:var(--ac);color:#fff;border-color:var(--ac)}
+.btn-p:hover{background:var(--acm);border-color:var(--acm)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-d{border-color:var(--re);color:var(--re);background:none}
+.btn-d:hover{background:var(--rel)}
+.btn-ghost{border-color:transparent;background:none;color:var(--t2)}
+.btn-ghost:hover{background:var(--s2);border-color:var(--b)}
+
+/* CARDS */
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:18px;transition:box-shadow .15s}
+.card-sm{padding:14px}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.tg{background:#E8F5F0;color:#1A6B47;border:1px solid #B8E0D0}
+.tb{background:#EBF0FA;color:#1A3A8C;border:1px solid #B8CCF0}
+.tac{background:#E8F5F0;color:#1A6B47;border:1px solid #B8E0D0}
+.tac2{background:#FDF0E6;color:#8C3A0A;border:1px solid #F0C8A0}
+.tr{background:#FDF0F0;color:#8C1A1A;border:1px solid #F0B8B8}
+.tam{background:#FDF8E6;color:#6B4A0A;border:1px solid #E8D890}
+.tpu{background:#F2EEFB;color:#5A20A8;border:1px solid #C8B0F0}
+
+/* FORMS */
+.field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.field label{font-size:11px;font-weight:500;color:var(--t2)}
+.field input,.field select,.field textarea{padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;font-family:'Outfit',sans-serif;color:var(--t);background:var(--s);transition:border-color .12s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(26,92,58,.08)}
+.field textarea{resize:vertical;min-height:64px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--s);border-radius:var(--rxl);padding:24px;width:540px;max-width:95vw;max-height:88vh;overflow-y:auto;border:1px solid var(--b)}
+.modal.lg{width:680px}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mt{font-size:15px;font-weight:600}
+.mx{background:none;border:none;font-size:18px;cursor:pointer;color:var(--t3);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.mx:hover{background:var(--s2);color:var(--t)}
+.mf{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--b)}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--b);background:var(--s2)}
+td{padding:9px 10px;border-bottom:1px solid var(--b);color:var(--t);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s2)}
+.tda{display:flex;gap:5px}
+
+/* DASHBOARD */
+.dg4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.dg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.dg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.stat{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:16px;transition:box-shadow .15s}.stat:hover{box-shadow:0 4px 16px rgba(46,125,94,.12)}
+.stat-l{font-size:10px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.stat-v{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.5px;line-height:1}
+.stat-s{font-size:11px;color:var(--t3);margin-top:3px}
+.sec-t{font-size:12px;font-weight:600;color:var(--t);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sec-t::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--ac);flex-shrink:0}
+
+/* AGENDA / CAL */
+.cal-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.cal-block{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:14px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-nt{font-size:13px;font-weight:500}
+.cdls{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px}
+.cdl{text-align:center;font-size:9px;font-weight:600;color:var(--t3);padding:2px 0}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cc{min-height:46px;border:0.5px solid var(--b);border-radius:6px;padding:3px;cursor:pointer;background:var(--s);transition:background .1s}
+.cc:hover{background:var(--s2)}
+.cc.empty{background:transparent;border-color:transparent;cursor:default}
+.cc.today{border-color:var(--ac);border-width:1.5px}
+.cc.hast{background:var(--acl)}
+.cdn{font-size:10px;font-weight:500;color:var(--t)}
+.cc.today .cdn{color:var(--ac);font-weight:700}
+.chip{font-size:9px;border-radius:3px;padding:1px 3px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.blue{background:var(--bll);color:var(--bl)}
+.chip.green{background:var(--acl);color:var(--ac)}
+.chip.orange{background:var(--ac2l);color:var(--ac2)}
+.chip.red{background:var(--rel);color:var(--re)}
+
+/* WEEK */
+.week-sec{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:16px}
+.week-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.week-t{font-size:13px;font-weight:500}
+.wgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dcol{border:0.5px solid var(--b);border-radius:var(--r);overflow:hidden;min-height:140px}
+.dhead{padding:6px 7px;background:var(--s2);border-bottom:0.5px solid var(--b)}
+.dname{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.dnum{font-size:17px;font-weight:500;color:var(--t);line-height:1.2}
+.dcol.today .dhead{background:var(--acl)}
+.dcol.today .dnum{color:var(--ac)}
+.dcol.wend .dhead{background:var(--s3)}
+.dbody{padding:5px}
+.dtask{font-size:10px;padding:3px 5px;border-radius:4px;margin-bottom:3px;border-left:2px solid var(--ac);background:var(--acl);color:var(--ac);line-height:1.3;cursor:pointer}
+.dtask.orange{border-color:var(--ac2);background:var(--ac2l);color:var(--ac2)}
+.dtask.red{border-color:var(--re);background:var(--rel);color:var(--re)}
+.dtask.blue{border-color:var(--bl);background:var(--bll);color:var(--bl)}
+.dnote{font-size:10px;padding:3px 5px;border-radius:4px;margin-bottom:3px;background:var(--s2);color:var(--t2);font-style:italic;line-height:1.3}
+.dadd{font-size:10px;color:var(--t3);padding:3px 5px;cursor:pointer;border-radius:4px;width:100%;text-align:left;border:none;background:none;font-family:'Outfit',sans-serif}
+.dadd:hover{background:var(--s2);color:var(--t)}
+
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kcol{background:var(--s2);border-radius:var(--rl);padding:12px;min-height:180px}
+.kct{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.kcard{background:var(--s);border:1px solid var(--b);border-radius:var(--r);padding:10px;margin-bottom:6px;cursor:pointer;transition:box-shadow .12s}
+.kcard:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.kct-v{font-size:11px;font-family:'DM Mono',monospace;color:var(--t3);margin-left:auto}
+
+/* IDEAS */
+.ideas-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.icard{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s}
+.icard:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+.it{font-size:13px;font-weight:500;margin:6px 0 5px;line-height:1.4}
+.ib{font-size:11px;color:var(--t2);line-height:1.5}
+
+/* FACTURAS */
+.fact-preview{background:var(--s);border:1px solid var(--b);border-radius:var(--rl);padding:28px;max-width:680px;margin:0 auto}
+.fact-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid var(--t)}
+.fact-company{font-size:20px;font-weight:600;letter-spacing:-.3px}
+.fact-datos{font-size:11px;color:var(--t2);margin-top:4px;line-height:1.6}
+.fact-num{text-align:right}
+.fact-num .fn{font-size:24px;font-weight:600;font-family:'DM Mono',monospace;color:var(--ac)}
+.fact-num .fd{font-size:11px;color:var(--t2);margin-top:2px}
+.fact-table{width:100%;border-collapse:collapse;margin:20px 0}
+.fact-table th{text-align:left;padding:8px 10px;background:var(--s2);border-bottom:1px solid var(--b);font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+.fact-table td{padding:10px;border-bottom:1px solid var(--b);font-size:13px}
+.fact-table tr:last-child td{border-bottom:none}
+.fact-total{display:flex;justify-content:flex-end;margin-top:16px}
+.fact-total-box{background:var(--s2);border-radius:var(--r);padding:14px 20px;min-width:200px}
+.fact-total-row{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:3px 0}
+.fact-total-final{display:flex;justify-content:space-between;font-size:15px;font-weight:600;padding-top:8px;margin-top:6px;border-top:1px solid var(--b)}
+.fact-footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--b);font-size:11px;color:var(--t3);line-height:1.7}
+
+/* MISC */
+.es{text-align:center;padding:30px 16px;color:var(--t3)}
+.es .ei{font-size:26px;margin-bottom:8px}
+.searchbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.searchbar input{flex:1;min-width:160px;padding:7px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;font-family:'Outfit',sans-serif;color:var(--t);background:var(--s)}
+.searchbar input:focus{outline:none;border-color:var(--ac)}
+.searchbar select{padding:7px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;font-family:'Outfit',sans-serif;color:var(--t);background:var(--s);cursor:pointer}
+.sep{border:none;border-top:1px solid var(--b);margin:14px 0}
+</style>
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo">
+    <div class="n">Bego Workspace</div>
+    <div class="s">Formacion · Consultoria IA</div>
+  </div>
+  <div class="sb-nav">
+    <div class="nl">Principal</div>
+    <div class="ni active" data-tab="dashboard">🏠 Dashboard</div>
+    <div class="ni" data-tab="agenda">📅 Agenda</div>
+    <div class="nl">Negocio</div>
+    <div class="ni" data-tab="organismos">🏛 Organismos</div>
+    <div class="ni" data-tab="contactos">🤝 Contactos</div>
+    <div class="ni" data-tab="propuestas">📤 Propuestas</div>
+    <div class="ni" data-tab="pipeline">📊 Pipeline</div>
+    <div class="nl">Estrategia</div>
+    <div class="ni" data-tab="ideas">💡 Ideas</div>
+    <div class="ni" data-tab="subvenciones">🔔 Subvenciones</div>
+    <div class="nl">Formacion</div>
+    <div class="ni" data-tab="miscursos">🎯 Mis cursos</div>
+    <div class="ni" data-tab="formaciones">🎓 Formaciones</div>
+    <div class="nl">Finanzas</div>
+    <div class="ni" data-tab="facturas">🧾 Facturas</div>
+    <div class="ni" data-tab="cobros">💰 Cobros</div>
+  </div>
+  <div class="sb-foot" id="sf-date"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="tt">Dashboard</div>
+    <div class="tb-actions">
+      <button class="btn btn-sm btn-p" id="add-btn" style="display:none">+ Anadir</button>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modal-box">
+    <div class="mh">
+      <div class="mt" id="modal-title">Anadir</div>
+      <button class="mx" id="mcx">&#215;</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="mf" id="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+var SK='bego_ws_v4';
+var D={
+  eventos:{},notas_dia:{},
+  organismos:[
+    {id:1,nombre:'Gremio Artesano Sastres y Modistas CV',tipo:'Prioridad inmediata',contacto:'Isabel (ref. Fran Tochena)',telefono:'',estado:'En curso',notas:'Proyecto IA Moda. Deadline GVA 4 mayo.'},
+    {id:2,nombre:'Ilustre Colegio de Abogados de Valencia',tipo:'Colegio Juridico',contacto:'',telefono:'963 502 021',estado:'Pendiente',notas:'IA aplicada a legal tech.'},
+    {id:3,nombre:'Colegio Oficial de Economistas de Valencia',tipo:'Colegio Juridico',contacto:'',telefono:'963 529 869',estado:'Pendiente',notas:'IA para analisis financiero.'},
+    {id:4,nombre:'Colegio Oficial de Graduados Sociales Valencia',tipo:'Colegio Juridico',contacto:'',telefono:'963 529 500',estado:'Pendiente',notas:'IA para RRHH y gestion laboral.'},
+    {id:5,nombre:'Colegio Oficial de Gestores Administrativos Valencia',tipo:'Colegio Juridico',contacto:'',telefono:'963 515 224',estado:'Pendiente',notas:'Muy receptivos a automatizacion IA.'},
+    {id:6,nombre:'Colegio de Administradores de Fincas Valencia-Castellon',tipo:'Colegio Juridico',contacto:'',telefono:'963 510 849',estado:'Pendiente',notas:'Digitalizacion de comunidades.'},
+    {id:7,nombre:'Colegio Agentes Propiedad Inmobiliaria Valencia',tipo:'Colegio Juridico',contacto:'',telefono:'963 510 752',estado:'Pendiente',notas:'IA para captacion y marketing.'},
+    {id:8,nombre:'Colegio Oficial Enginyers Informaticos CV',tipo:'Colegio Tecnologia',contacto:'',telefono:'963 156 823',estado:'Pendiente',notas:'Muy receptivos. Ya respaldan jornadas IA.'},
+    {id:9,nombre:'Colegio Territorial de Arquitectos de Valencia',tipo:'Colegio Tecnologia',contacto:'',telefono:'963 516 737',estado:'Pendiente',notas:'IA aplicada a diseno y BIM.'},
+    {id:10,nombre:'Colegio Oficial Arquitectura Tecnica Valencia',tipo:'Colegio Tecnologia',contacto:'',telefono:'963 536 000',estado:'Pendiente',notas:'IA para gestion de obras.'},
+    {id:11,nombre:'Colegio Ingenieros Industriales CV',tipo:'Colegio Tecnologia',contacto:'',telefono:'963 516 835',estado:'Pendiente',notas:'IA industrial y automatizacion.'},
+    {id:12,nombre:'Colegio Ingenieros Telecomunicacion CV',tipo:'Colegio Tecnologia',contacto:'',telefono:'963 951 800',estado:'Pendiente',notas:'IA big data ciberseguridad.'},
+    {id:13,nombre:'Colegio Oficial de Psicologia de la CV',tipo:'Colegio Salud',contacto:'',telefono:'963 929 640',estado:'Pendiente',notas:'IA aplicada a salud mental.'},
+    {id:14,nombre:'Colegio Oficial de Farmaceuticos de Valencia',tipo:'Colegio Salud',contacto:'',telefono:'963 160 200',estado:'Pendiente',notas:'+3000 colegiados. Gestion farmacia.'},
+    {id:15,nombre:'Colegio Oficial de Enfermeria de Valencia',tipo:'Colegio Salud',contacto:'',telefono:'963 524 624',estado:'Pendiente',notas:'Salud digital e IA en enfermeria.'},
+    {id:16,nombre:'Colegio Oficial de Fisioterapeutas CV',tipo:'Colegio Salud',contacto:'',telefono:'963 942 068',estado:'Pendiente',notas:'IA para gestion de clinica.'},
+    {id:17,nombre:'CEV Confederacion Empresarial CV',tipo:'Confederacion',contacto:'',telefono:'963 156 800',estado:'Pendiente',notas:'+580 asociaciones CV. Puerta estrategica.'},
+    {id:18,nombre:'Camara de Comercio de Valencia',tipo:'Camara',contacto:'',telefono:'963 103 900',estado:'Pendiente',notas:'Portal de ayudas propio. Cursos digitales.'},
+    {id:19,nombre:'Union Profesional de Valencia',tipo:'Federacion Colegios',contacto:'',telefono:'963 942 199',estado:'Pendiente',notas:'44 colegios. +90.000 colegiados.'},
+    {id:20,nombre:'ATEVAL Asociacion Empresarial Textil CV',tipo:'Asociacion Sectorial',contacto:'',telefono:'962 390 250',estado:'Pendiente',notas:'Sinergias con proyecto IA Moda.'},
+    {id:21,nombre:'FEMEVAL Fed. Empresarios Metal Valencia',tipo:'Asociacion Sectorial',contacto:'',telefono:'963 109 090',estado:'Pendiente',notas:'IA industrial.'},
+    {id:22,nombre:'FEVEC Fed. Empresarios Construccion CV',tipo:'Asociacion Sectorial',contacto:'',telefono:'963 867 280',estado:'Pendiente',notas:'IA aplicada a BIM.'},
+    {id:23,nombre:'Centro Artesania de la Comunitat Valenciana',tipo:'Asociacion Sectorial',contacto:'',telefono:'963 866 000',estado:'Pendiente',notas:'Directorio gremios artesanos CV.'},
+    {id:24,nombre:'FEVECTA Fed. Valencianes Cooperatives Treball',tipo:'Asociacion Sectorial',contacto:'',telefono:'963 510 753',estado:'Pendiente',notas:'Cooperativas de trabajo.'},
+    {id:25,nombre:'APEVCARM Profesionales Estetica CV',tipo:'Asociacion Sectorial',contacto:'',telefono:'',estado:'Pendiente',notas:'IA para gestion y marketing.'},
+    {id:26,nombre:'Asociacion Valenciana de Empresarios AVE',tipo:'Asociacion Empresarial',contacto:'',telefono:'963 514 700',estado:'Pendiente',notas:'Grandes empresas CV.'},
+    {id:27,nombre:'Asociacion Jovenes Empresarios Valencia AJE',tipo:'Asociacion Empresarial',contacto:'',telefono:'963 102 750',estado:'Pendiente',notas:'Alta predisposicion a IA.'},
+    {id:28,nombre:'EVAP Empresarias y Profesionales de Valencia',tipo:'Asociacion Mujeres',contacto:'',telefono:'963 535 690',estado:'Pendiente',notas:'+500 asociadas. Doble subvencion: formacion + igualdad.'},
+    {id:29,nombre:'AME Mujeres Emprendedoras CV',tipo:'Asociacion Mujeres',contacto:'Mila Llopis (Presidenta)',telefono:'',estado:'Pendiente',notas:'+200 emprendedoras. Perfil autonoma/pyme.'},
+    {id:30,nombre:'AMIT-CV Mujeres Investigadoras y Tecnologas',tipo:'Asociacion Mujeres',contacto:'',telefono:'',estado:'Pendiente',notas:'Mujeres en ciencia y tecnologia.'},
+    {id:31,nombre:'Asociacion Mujeres Profesionales Sector Inmobiliario CV',tipo:'Asociacion Mujeres',contacto:'',telefono:'',estado:'Pendiente',notas:'IA para captacion y marketing.'},
+    {id:32,nombre:'LABORA Servei Valencia Ocupacio',tipo:'Organismo Publico',contacto:'',telefono:'012',estado:'En curso',notas:'Ya acreditada. Seguir convocatorias 2026.'},
+    {id:33,nombre:'EOI Escuela Organizacion Industrial',tipo:'Organismo Publico',contacto:'',telefono:'963 100 500',estado:'En curso',notas:'Ya colaboramos. Generacion Digital Pymes.'},
+    {id:34,nombre:'IVACE Institut Valencia Competitivitat',tipo:'Organismo Publico',contacto:'',telefono:'963 971 900',estado:'Pendiente',notas:'Convocatorias digitalizacion pymes.'},
+    {id:35,nombre:'Ayuntamiento Valencia Activa',tipo:'Organismo Publico',contacto:'',telefono:'963 524 868',estado:'Pendiente',notas:'Formacion empresarial municipal.'},
+    {id:36,nombre:'Diputacion de Valencia DIVAL',tipo:'Organismo Publico',contacto:'',telefono:'963 882 500',estado:'Pendiente',notas:'Programas digitalizacion municipios.'}
+  ],
+  contactos:[
+    {id:1,nombre:'Isabel (Gremio Modistas)',cargo:'Responsable formacion',organismo:'Gremio Artesano Sastres',como:'Referida por Fran Tochena',potencial:'Alto',notas:'Reunion pendiente presentar memoria GVA'},
+    {id:2,nombre:'Fran Tochena',cargo:'Maestro Mayor',organismo:'Gremio Artesano Sastres',como:'Contacto directo',potencial:'Alto',notas:''}
+  ],
+  propuestas:[
+    {id:1,organismo:'Gremio Artesano Sastres CV',programa:'IA Moda: Digitaliza tu Taller con IA',fecha:'2026-04-18',estado:'En preparacion',importe:1800,proximo:'Entregar memoria antes del 4 mayo',notas:'20h 5 sabados octubre 2026 90 euros/h oficial'}
+  ],
+  pipeline:[
+    {id:1,organismo:'Gremio Artesano Sastres CV',proyecto:'IA Moda',fase:'negociacion',importe:1800,mes:'2026-10',notas:''}
+  ],
+  ideas:[
+    {id:1,titulo:'Desayunos IA en asociaciones',categoria:'Posicionamiento',urgencia:'Alta',cuerpo:'Sesiones de 2h para socios de asociaciones empresariales. Puerta de entrada a formacion subvencionada.'},
+    {id:2,titulo:'Posicionamiento GEO consultoras IA',categoria:'Contenido',urgencia:'Media',cuerpo:'Articulo LinkedIn sobre GEO aplicado al nicho de formacion IA para pymes.'},
+    {id:3,titulo:'Servicio auditoria IA para pymes',categoria:'Nuevo servicio',urgencia:'Media',cuerpo:'Diagnostico de 3h + informe de oportunidades de automatizacion. Precio: 450 euros.'}
+  ],
+  subvenciones:[
+    {id:1,nombre:'GVA Colegios Profesionales y Asociaciones',organismo:'GVA',importe:30000,deadline:'2026-05-04',estado:'abierta',notas:'Max 30.000 euros/proyecto. Beneficiario: asociacion. 90 euros/h oficial.'},
+    {id:2,nombre:'Generacion Digital Pymes EOI',organismo:'EOI / MINECO',importe:0,deadline:'',estado:'seguimiento',notas:'Convocatorias periodicas. Ya acreditada.'}
+  ],
+  miscursos:[
+    {id:1,nombre:'IA Aplicada a Pymes y Autonomos',duracion:'10h',precio:900,formato:'Presencial / Online',dirigido:'Colegios Profesionales, Asociaciones Empresariales',modulos:'Fundamentos IA, Herramientas practicas, Automatizacion, Casos reales',notas:'Formato introductorio. Subvencionable GVA.'},
+    {id:2,nombre:'IA Avanzada para Negocios',duracion:'20h',precio:1800,formato:'Presencial',dirigido:'Colegios Profesionales, Gremios',modulos:'IA Generativa, Agentes IA, Automatizacion avanzada, Integraciones, Proyecto final',notas:'Formato avanzado. 90 euros/h oficial GVA.'}
+  ],
+  formaciones:[
+    {id:1,nombre:'AI Agents con n8n',enlace:'',notas:'Maxima prioridad. Autoformacion.',estado:'en curso'},
+    {id:2,nombre:'Make Intermediate-Advanced',enlace:'',notas:'',estado:'pendiente'},
+    {id:3,nombre:'Power Automate',enlace:'',notas:'Microsoft Learn.',estado:'pendiente'},
+    {id:4,nombre:'Google AI Essentials',enlace:'https://www.coursera.org',notas:'Certificado oficial Google IA. Hacer primero.',estado:'pendiente'},
+    {id:5,nombre:'Design Thinking Google UX',enlace:'https://www.coursera.org',notas:'Base estrategica para proyectos.',estado:'pendiente'},
+    {id:6,nombre:'Change Management for GenAI',enlace:'https://www.coursera.org',notas:'Gestion del cambio. IBM. Subtitulos ES.',estado:'pendiente'}
+  ],
+  facturas:[],
+  cobros:[]
+};
+
+var EMPRESAS={
+  'Adams Formacion':{cif:'',dir:''},
+  'Virensis / Infoser New Tecnologies SL':{cif:'B87993622',dir:'C/Tomas Redondo 2, Oficinas 3-22. CP: 28033, Madrid'},
+  'EOI':{cif:'Q2801232B',dir:'Avda. Gregorio del Amo 6, 28040 Madrid'},
+  'Otra empresa':{cif:'',dir:''}
+};
+
+var MIS_DATOS={nombre:'Begoña Arasa',dni:'45630672Y',dir:'Avenida Burjasot 50, C.P 46009 Valencia',banco:'ES49 0182 6589 7102 0386 3594'};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(D))}catch(e){}}
+function load(){try{var s=localStorage.getItem(SK);if(s){var p=JSON.parse(s);Object.keys(p).forEach(function(k){if(D[k]!==undefined)D[k]=p[k]})}}catch(e){}}
+load();
+
+var uid=2000;
+function nid(){return ++uid}
+var MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var DIA=['Lun','Mar','Mie','Jue','Vie','Sab','Dom'];
+var HOY=new Date();
+
+function fd(d){if(!d)return '-';var p=d.split('-');var m=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];return parseInt(p[2])+' '+m[parseInt(p[1])-1]+' '+p[0]}
+function du(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/86400000)}
+function dkey(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+function utag(days){if(days===null)return '';if(days<0)return '<span class="tag tr">Vencida</span>';if(days<=7)return '<span class="tag tr">'+days+'d</span>';if(days<=30)return '<span class="tag tac2">'+days+'d</span>';return '<span class="tag tac">'+days+'d</span>'}
+function v(id){var el=document.getElementById(id);return el?el.value.trim():''}
+function vn(id){return parseFloat(v(id))||0}
+
+function openM(title,body,footer,lg){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=body;
+  document.getElementById('modal-footer').innerHTML=footer;
+  document.getElementById('modal-box').className='modal'+(lg?' lg':'');
+  document.getElementById('modal').classList.add('open');
+}
+function closeM(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('mcx').onclick=closeM;
+document.getElementById('modal').onclick=function(e){if(e.target===this)closeM()};
+
+var tabT={dashboard:'Dashboard',agenda:'Agenda y Calendario',organismos:'Organismos',contactos:'Contactos',propuestas:'Propuestas enviadas',pipeline:'Pipeline',ideas:'Ideas',subvenciones:'Subvenciones',miscursos:'Mis cursos',formaciones:'Formaciones',facturas:'Facturas',cobros:'Cobros'};
+var tabA={organismos:'+ Organismo',contactos:'+ Contacto',propuestas:'+ Propuesta',pipeline:'+ Proyecto',ideas:'+ Idea',subvenciones:'+ Subvencion',miscursos:'+ Curso',formaciones:'+ Formacion',facturas:'+ Factura'};
+var curTab='dashboard';
+
+function nav(tab){
+  curTab=tab;
+  document.querySelectorAll('.ni').forEach(function(el){el.classList.toggle('active',el.dataset.tab===tab)});
+  document.getElementById('tt').textContent=tabT[tab]||tab;
+  var ab=document.getElementById('add-btn');
+  if(tabA[tab]){ab.style.display='';ab.textContent=tabA[tab];ab.onclick=function(){doAdd(tab)}}else{ab.style.display='none'}
+  render(tab);
+}
+document.querySelectorAll('.ni').forEach(function(el){el.onclick=function(){nav(el.dataset.tab)}});
+
+function render(tab){
+  var c=document.getElementById('content');c.innerHTML='';
+  ({dashboard:rDash,agenda:rAgenda,organismos:rOrg,contactos:rCont,propuestas:rProp,pipeline:rPipe,ideas:rIdeas,subvenciones:rSub,miscursos:rMisCursos,formaciones:rForm,facturas:rFacturas,cobros:rCobros})[tab]&&({dashboard:rDash,agenda:rAgenda,organismos:rOrg,contactos:rCont,propuestas:rProp,pipeline:rPipe,ideas:rIdeas,subvenciones:rSub,miscursos:rMisCursos,formaciones:rForm,facturas:rFacturas,cobros:rCobros})[tab](c);
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+function rDash(c){
+  var pt=D.pipeline.reduce(function(a,b){return a+(b.importe||0)},0);
+  var sa=D.subvenciones.filter(function(s){return s.estado==='abierta'}).length;
+  var pe=D.propuestas.filter(function(p){return p.estado==='En preparacion'||p.estado==='Enviada'}).length;
+  var cc=D.cobros.filter(function(x){return !x.cobrado&&x.vencimiento&&du(x.vencimiento)<=0}).length;
+  var fechas=[];
+  D.subvenciones.filter(function(s){return s.deadline&&s.estado==='abierta'}).forEach(function(s){fechas.push({label:s.nombre,days:du(s.deadline),date:s.deadline})});
+  fechas.sort(function(a,b){return (a.days||999)-(b.days||999)});
+  c.innerHTML='<div class="dg4">'+
+    '<div class="stat"><div class="stat-l">Pipeline estimado</div><div class="stat-v" style="color:var(--bl)">'+pt.toLocaleString('es')+'<span style="font-size:14px">€</span></div><div class="stat-s">ingresos potenciales</div></div>'+
+    '<div class="stat"><div class="stat-l">Propuestas activas</div><div class="stat-v">'+pe+'</div><div class="stat-s">en curso o enviadas</div></div>'+
+    '<div class="stat"><div class="stat-l">Subvenciones abiertas</div><div class="stat-v" style="color:var(--ac2)">'+sa+'</div><div class="stat-s">disponibles ahora</div></div>'+
+    '<div class="stat"><div class="stat-l">Cobros vencidos</div><div class="stat-v" style="color:'+(cc>0?'var(--re)':'var(--ac)')+'">'+cc+'</div><div class="stat-s">sin cobrar</div></div>'+
+    '</div>'+
+    '<div class="dg2">'+
+    '<div class="card"><div class="sec-t">Proximas fechas criticas</div>'+
+    (fechas.length===0?'<div class="es"><p>Sin fechas proximas</p></div>':fechas.slice(0,6).map(function(i){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:.5px solid var(--b)"><div style="font-size:12px;flex:1;margin-right:8px">'+i.label+'</div><div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--t3)">'+fd(i.date)+'</span>'+utag(i.days)+'</div></div>'}).join(''))+
+    '</div>'+
+    '<div class="card"><div class="sec-t">Organismos por estado</div>'+
+    ['En curso','Pendiente','Descartado'].map(function(e){var n=D.organismos.filter(function(o){return o.estado===e}).length;return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:.5px solid var(--b)"><span style="font-size:12px;color:var(--t2)">'+e+'</span><span style="font-size:13px;font-weight:500;font-family:DM Mono,monospace">'+n+'</span></div>'}).join('')+
+    '<div style="display:flex;justify-content:space-between;padding:7px 0;font-size:12px;font-weight:500;color:var(--t3)"><span>Total</span><span style="font-family:DM Mono,monospace">'+D.organismos.length+'</span></div>'+
+    '</div></div>'+
+    '<div class="dg3">'+
+    '<div class="card card-sm"><div class="sec-t">Formaciones en curso</div>'+D.formaciones.filter(function(f){return f.estado==='en curso'}).map(function(f){return '<div style="font-size:12px;padding:4px 0;border-bottom:.5px solid var(--b)">'+f.nombre+'</div>'}).join('')+(D.formaciones.filter(function(f){return f.estado==='en curso'}).length===0?'<div style="font-size:12px;color:var(--t3)">Ninguna en curso</div>':'')+'</div>'+
+    '<div class="card card-sm"><div class="sec-t">Ideas urgentes</div>'+D.ideas.filter(function(i){return i.urgencia==='Alta'}).map(function(i){return '<div style="font-size:12px;padding:4px 0;border-bottom:.5px solid var(--b)">'+i.titulo+'</div>'}).join('')+(D.ideas.filter(function(i){return i.urgencia==='Alta'}).length===0?'<div style="font-size:12px;color:var(--t3)">Sin ideas urgentes</div>':'')+'</div>'+
+    '<div class="card card-sm"><div class="sec-t">Mis cursos</div>'+D.miscursos.map(function(c){return '<div style="font-size:12px;padding:4px 0;border-bottom:.5px solid var(--b)"><div style="font-weight:500">'+c.nombre+'</div><div style="color:var(--t3)">'+c.duracion+' · '+c.precio.toLocaleString('es')+'€</div></div>'}).join('')+'</div>'+
+    '</div>';
+}
+
+// ── AGENDA ────────────────────────────────────────────────────────────────────
+var calY=HOY.getFullYear(),calM=HOY.getMonth(),wkOff=0;
+
+function rAgenda(c){
+  var m2=calM===11?0:calM+1,y2=calM===11?calY+1:calY;
+  c.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+    '<button class="btn btn-sm btn-ghost" onclick="calNav(-1)">&#8249; Anterior</button>'+
+    '<span style="font-size:14px;font-weight:500">'+MES[calM]+' '+calY+' &mdash; '+MES[m2]+' '+y2+'</span>'+
+    '<button class="btn btn-sm btn-ghost" onclick="calNav(1)">Siguiente &#8250;</button>'+
+    '</div>'+
+    '<div class="cal-wrap" id="cal-months"></div>'+
+    '<div class="week-sec"><div class="week-h"><div class="week-t" id="wk-label"></div><div style="display:flex;gap:6px"><button class="btn btn-sm btn-ghost" onclick="wkNav(-1)">&#8249;</button><button class="btn btn-sm btn-ghost" onclick="wkNav(1)">&#8250;</button></div></div><div class="wgrid" id="wk-grid"></div></div>';
+  buildMonths(calY,calM,y2,m2);buildWeek();
+}
+function calNav(d){calM+=d;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}rAgenda(document.getElementById('content'))}
+function wkNav(d){wkOff+=d;buildWeek()}
+
+function buildMonths(y1,m1,y2,m2){
+  var el=document.getElementById('cal-months');if(!el)return;
+  el.innerHTML=bMonth(y1,m1)+bMonth(y2,m2);
+}
+function bMonth(y,m){
+  var first=new Date(y,m,1).getDay(),off=first===0?6:first-1,days=new Date(y,m+1,0).getDate();
+  var h='<div class="cal-block"><div class="cal-nav"><span class="cal-nt">'+MES[m]+' '+y+'</span></div>'+
+    '<div class="cdls">'+DIA.map(function(d){return '<div class="cdl">'+d+'</div>'}).join('')+'</div>'+
+    '<div class="cgrid">';
+  for(var i=0;i<off;i++)h+='<div class="cc empty"></div>';
+  for(var d=1;d<=days;d++){
+    var k=dkey(y,m,d),evs=D.eventos[k]||[],nota=D.notas_dia[k]||'';
+    var isTar=D.propuestas.some(function(p){return p.fecha===k})||false;
+    var isT=d===HOY.getDate()&&m===HOY.getMonth()&&y===HOY.getFullYear();
+    h+='<div class="cc'+(isT?' today':'')+(evs.length||nota?' hast':'')+'" onclick="openDay('+y+','+m+','+d+')"><div class="cdn">'+d+'</div>'+
+      evs.slice(0,2).map(function(ev){return '<div class="chip '+(ev.color||'blue')+'">'+ev.name+'</div>'}).join('')+
+      '</div>';
+  }
+  return h+'</div></div>';
+}
+function buildWeek(){
+  var el=document.getElementById('wk-grid'),lbl=document.getElementById('wk-label');
+  if(!el)return;
+  var now=new Date(),mon=new Date(now),dow=now.getDay()===0?6:now.getDay()-1;
+  mon.setDate(now.getDate()-dow+wkOff*7);
+  var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  var fmt=function(d){return d.getDate()+' '+MES[d.getMonth()].slice(0,3)};
+  if(lbl)lbl.textContent='Semana '+(wkOff===0?'actual':wkOff>0?'+'+wkOff:wkOff)+': '+fmt(mon)+' - '+fmt(sun);
+  var h='';
+  for(var i=0;i<7;i++){
+    var dd=new Date(mon);dd.setDate(mon.getDate()+i);
+    var k=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+    var isT=dd.toDateString()===now.toDateString(),isW=i>=5;
+    var evs=D.eventos[k]||[],nota=D.notas_dia[k]||'';
+    var props=D.propuestas.filter(function(p){return p.fecha===k});
+    h+='<div class="dcol'+(isT?' today':'')+(isW?' wend':'')+'">'+
+      '<div class="dhead"><div class="dname">'+DIA[i]+'</div><div class="dnum">'+dd.getDate()+'</div></div>'+
+      '<div class="dbody">';
+    props.forEach(function(p){h+='<div class="dtask orange">'+p.programa+'</div>'});
+    evs.forEach(function(ev){h+='<div class="dtask '+(ev.color||'blue')+'">'+(ev.time?ev.time+' ':'')+ev.name+'</div>'});
+    if(nota)h+='<div class="dnote">'+nota+'</div>';
+    h+='<button class="dadd" onclick="openDay('+dd.getFullYear()+','+dd.getMonth()+','+dd.getDate()+')">+ anadir</button>';
+    h+='</div></div>';
+  }
+  el.innerHTML=h;
+}
+function openDay(y,m,d){
+  var k=dkey(y,m,d),evs=D.eventos[k]||[],nota=D.notas_dia[k]||'';
+  var evList=evs.length===0?'<div style="font-size:12px;color:var(--t3);padding:4px 0">Sin eventos</div>':
+    evs.map(function(ev,i){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 7px;background:var(--s2);border-radius:6px;margin-bottom:4px;font-size:12px"><span>'+(ev.time?'<strong>'+ev.time+'</strong> ':'')+ev.name+'</span><button onclick="delEv(\''+k+'\','+i+')" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:15px;line-height:1">&#215;</button></div>'}).join('');
+  openM(d+' '+MES[m]+' '+y,
+    '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Eventos</div><div id="ev-list">'+evList+'</div></div>'+
+    '<hr class="sep"><div class="field"><label>Nuevo evento</label><input type="text" id="ev-name" placeholder="Nombre del evento"></div>'+
+    '<div class="fg2"><div class="field"><label>Hora</label><input type="time" id="ev-time"></div><div class="field"><label>Color</label><select id="ev-color"><option value="blue">Azul</option><option value="green">Verde</option><option value="orange">Naranja</option><option value="red">Rojo</option></select></div></div>'+
+    '<div class="field"><label>Nota del dia</label><textarea id="nota-dia" placeholder="Notas, ideas, recordatorios...">'+nota+'</textarea></div>',
+    '<button class="btn" onclick="closeM()">Cerrar</button><button class="btn btn-p" onclick="saveDay(\''+k+'\')">Guardar</button>');
+  setTimeout(function(){var el=document.getElementById('ev-name');if(el){el.focus();el.onkeydown=function(e){if(e.key==='Enter')saveDay(k)}}},100);
+}
+function saveDay(k){
+  var name=v('ev-name'),nota=document.getElementById('nota-dia').value.trim();
+  if(nota)D.notas_dia[k]=nota;else delete D.notas_dia[k];
+  if(name){if(!D.eventos[k])D.eventos[k]=[];D.eventos[k].push({name:name,time:v('ev-time'),color:v('ev-color')})}
+  save();closeM();render(curTab);
+}
+function delEv(k,i){D.eventos[k].splice(i,1);save();render(curTab)}
+
+// ── ORGANISMOS ────────────────────────────────────────────────────────────────
+function rOrg(c){
+  c.innerHTML='<div class="searchbar"><input type="text" id="os" placeholder="Buscar organismo, tipo..."><select id="of"><option value="">Todos los estados</option><option>Pendiente</option><option>En curso</option><option>Descartado</option></select></div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Contacto</th><th>Telefono</th><th>Estado</th><th></th></tr></thead><tbody id="org-body"></tbody></table></div></div>';
+  var upd=function(){
+    var q=v('os').toLowerCase(),f=v('of');
+    var rows=D.organismos.filter(function(o){return(!q||o.nombre.toLowerCase().includes(q)||(o.tipo||'').toLowerCase().includes(q))&&(!f||o.estado===f)});
+    document.getElementById('org-body').innerHTML=rows.length===0?'<tr><td colspan="6"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>No hay organismos</p></div></td></tr>':
+    rows.map(function(o){return '<tr><td><div style="font-weight:500;font-size:13px">'+o.nombre+'</div></td><td><span class="tag tg" style="font-size:10px">'+o.tipo+'</span></td><td style="font-size:12px">'+o.contacto+'</td><td style="font-size:12px;font-family:DM Mono,monospace">'+o.telefono+'</td><td><span class="tag '+(o.estado==='En curso'?'tac':o.estado==='Descartado'?'tr':'tg')+'">'+o.estado+'</span></td><td><div class="tda"><button class="btn btn-sm" onclick="editOrg('+o.id+')">Editar</button><button class="btn btn-sm btn-d" onclick="delOrg('+o.id+')">&#215;</button></div></td></tr>'}).join('');
+  };
+  document.getElementById('os').oninput=upd;document.getElementById('of').onchange=upd;upd();
+}
+function orgF(o){o=o||{};return '<div class="field"><label>Nombre</label><input type="text" id="fn" value="'+(o.nombre||'')+'"></div><div class="fg2"><div class="field"><label>Tipo</label><input type="text" id="ft" value="'+(o.tipo||'')+'"></div><div class="field"><label>Estado</label><select id="fes"><option '+(o.estado==='Pendiente'?'selected':'')+'>Pendiente</option><option '+(o.estado==='En curso'?'selected':'')+'>En curso</option><option '+(o.estado==='Descartado'?'selected':'')+'>Descartado</option></select></div></div><div class="fg2"><div class="field"><label>Contacto</label><input type="text" id="fc" value="'+(o.contacto||'')+'"></div><div class="field"><label>Telefono</label><input type="text" id="ftel" value="'+(o.telefono||'')+'"></div></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function saveOrg(id){var o={nombre:v('fn'),tipo:v('ft'),estado:v('fes'),contacto:v('fc'),telefono:v('ftel'),notas:v('fno')};if(!o.nombre)return;if(id)Object.assign(D.organismos.find(function(x){return x.id===id}),o);else D.organismos.push(Object.assign({id:nid()},o));save();closeM();rOrg(document.getElementById('content'))}
+function editOrg(id){var o=D.organismos.find(function(x){return x.id===id});openM('Editar organismo',orgF(o),mfd('saveOrg('+id+')','delOrg('+id+')'))}
+function delOrg(id){if(!confirm('Eliminar organismo?'))return;D.organismos=D.organismos.filter(function(x){return x.id!==id});save();closeM();rOrg(document.getElementById('content'))}
+
+// ── CONTACTOS ────────────────────────────────────────────────────────────────
+function rCont(c){
+  c.innerHTML='<div class="searchbar"><input type="text" id="cs" placeholder="Buscar contacto..."></div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Cargo / Organismo</th><th>Como nos conocimos</th><th>Potencial</th><th>Notas</th><th></th></tr></thead><tbody id="cont-body"></tbody></table></div></div>';
+  var upd=function(){
+    var q=v('cs').toLowerCase();
+    var rows=D.contactos.filter(function(o){return!q||o.nombre.toLowerCase().includes(q)||(o.organismo||'').toLowerCase().includes(q)});
+    document.getElementById('cont-body').innerHTML=rows.length===0?'<tr><td colspan="6"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin contactos</p></div></td></tr>':
+    rows.map(function(o){return '<tr><td style="font-weight:500">'+o.nombre+'</td><td style="font-size:12px">'+o.cargo+'<br><span style="color:var(--t3)">'+o.organismo+'</span></td><td style="font-size:12px">'+o.como+'</td><td><span class="tag '+(o.potencial==='Alto'?'tac':o.potencial==='Medio'?'tac2':'tg')+'">'+o.potencial+'</span></td><td style="font-size:12px;color:var(--t2);max-width:150px">'+o.notas+'</td><td><div class="tda"><button class="btn btn-sm" onclick="editCont('+o.id+')">Editar</button><button class="btn btn-sm btn-d" onclick="delCont('+o.id+')">&#215;</button></div></td></tr>'}).join('');
+  };
+  document.getElementById('cs').oninput=upd;upd();
+}
+function contF(o){o=o||{};return '<div class="fg2"><div class="field"><label>Nombre</label><input type="text" id="fn" value="'+(o.nombre||'')+'"></div><div class="field"><label>Cargo</label><input type="text" id="fca" value="'+(o.cargo||'')+'"></div></div><div class="fg2"><div class="field"><label>Organismo</label><input type="text" id="fo" value="'+(o.organismo||'')+'"></div><div class="field"><label>Potencial</label><select id="fpo"><option '+(o.potencial==='Alto'?'selected':'')+'>Alto</option><option '+(o.potencial==='Medio'?'selected':'')+'>Medio</option><option '+(o.potencial==='Bajo'?'selected':'')+'>Bajo</option></select></div></div><div class="field"><label>Como nos conocimos</label><input type="text" id="fco" value="'+(o.como||'')+'"></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function saveCont(id){var o={nombre:v('fn'),cargo:v('fca'),organismo:v('fo'),potencial:v('fpo'),como:v('fco'),notas:v('fno')};if(!o.nombre)return;if(id)Object.assign(D.contactos.find(function(x){return x.id===id}),o);else D.contactos.push(Object.assign({id:nid()},o));save();closeM();rCont(document.getElementById('content'))}
+function editCont(id){var o=D.contactos.find(function(x){return x.id===id});openM('Editar contacto',contF(o),mfd('saveCont('+id+')','delCont('+id+')'))}
+function delCont(id){D.contactos=D.contactos.filter(function(x){return x.id!==id});save();closeM();rCont(document.getElementById('content'))}
+
+// ── PROPUESTAS ────────────────────────────────────────────────────────────────
+function rProp(c){
+  c.innerHTML='<div class="searchbar"><input type="text" id="ps" placeholder="Buscar propuesta..."><select id="pf"><option value="">Todos los estados</option><option>En preparacion</option><option>Enviada</option><option>Aceptada</option><option>Rechazada</option></select></div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Organismo</th><th>Programa</th><th>Fecha</th><th>Importe</th><th>Estado</th><th>Proximo paso</th><th></th></tr></thead><tbody id="prop-body"></tbody></table></div></div>';
+  var upd=function(){
+    var q=v('ps').toLowerCase(),f=v('pf');
+    var rows=D.propuestas.filter(function(o){return(!q||o.organismo.toLowerCase().includes(q)||o.programa.toLowerCase().includes(q))&&(!f||o.estado===f)});
+    document.getElementById('prop-body').innerHTML=rows.length===0?'<tr><td colspan="7"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin propuestas</p></div></td></tr>':
+    rows.map(function(o){return '<tr><td style="font-weight:500">'+o.organismo+'</td><td style="font-size:12px">'+o.programa+'</td><td style="font-size:11px;font-family:DM Mono,monospace">'+fd(o.fecha)+'</td><td style="font-size:12px;font-family:DM Mono,monospace">'+(o.importe?o.importe.toLocaleString('es')+'€':'')+'</td><td><span class="tag '+(o.estado==='Aceptada'?'tac':o.estado==='Enviada'?'tb':o.estado==='Rechazada'?'tr':'tac2')+'">'+o.estado+'</span></td><td style="font-size:12px;max-width:160px">'+o.proximo+'</td><td><div class="tda"><button class="btn btn-sm" onclick="editProp('+o.id+')">Editar</button><button class="btn btn-sm btn-d" onclick="delProp('+o.id+')">&#215;</button></div></td></tr>'}).join('');
+  };
+  document.getElementById('ps').oninput=upd;document.getElementById('pf').onchange=upd;upd();
+}
+function propF(o){o=o||{};return '<div class="field"><label>Organismo</label><input type="text" id="fo" value="'+(o.organismo||'')+'"></div><div class="field"><label>Programa / Titulo</label><input type="text" id="fpr" value="'+(o.programa||'')+'"></div><div class="fg3"><div class="field"><label>Fecha</label><input type="date" id="ff" value="'+(o.fecha||'')+'"></div><div class="field"><label>Importe euros</label><input type="number" id="fi" value="'+(o.importe||'')+'"></div><div class="field"><label>Estado</label><select id="fes"><option '+(o.estado==='En preparacion'?'selected':'')+'>En preparacion</option><option '+(o.estado==='Enviada'?'selected':'')+'>Enviada</option><option '+(o.estado==='Aceptada'?'selected':'')+'>Aceptada</option><option '+(o.estado==='Rechazada'?'selected':'')+'>Rechazada</option></select></div></div><div class="field"><label>Proximo paso</label><input type="text" id="fpx" value="'+(o.proximo||'')+'"></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function saveProp(id){var o={organismo:v('fo'),programa:v('fpr'),fecha:v('ff'),importe:vn('fi'),estado:v('fes'),proximo:v('fpx'),notas:v('fno')};if(!o.organismo)return;if(id)Object.assign(D.propuestas.find(function(x){return x.id===id}),o);else D.propuestas.push(Object.assign({id:nid()},o));save();closeM();rProp(document.getElementById('content'))}
+function editProp(id){var o=D.propuestas.find(function(x){return x.id===id});openM('Editar propuesta',propF(o),mfd('saveProp('+id+')','delProp('+id+')'))}
+function delProp(id){D.propuestas=D.propuestas.filter(function(x){return x.id!==id});save();closeM();rProp(document.getElementById('content'))}
+
+// ── PIPELINE ─────────────────────────────────────────────────────────────────
+function rPipe(c){
+  var fases=['oportunidad','negociacion','confirmada','cobrada'];
+  var fl={oportunidad:'Oportunidad',negociacion:'En negociacion',confirmada:'Confirmada',cobrada:'Cobrada'};
+  var ftag={oportunidad:'tg',negociacion:'tac2',confirmada:'tb',cobrada:'tac'};
+  var pt=D.pipeline.reduce(function(a,b){return a+(b.importe||0)},0);
+  var conf=D.pipeline.filter(function(p){return p.fase==='confirmada'||p.fase==='cobrada'}).reduce(function(a,b){return a+(b.importe||0)},0);
+  c.innerHTML='<div class="dg3" style="margin-bottom:14px">'+
+    '<div class="stat"><div class="stat-l">Pipeline total</div><div class="stat-v" style="color:var(--bl)">'+pt.toLocaleString('es')+'€</div></div>'+
+    '<div class="stat"><div class="stat-l">Confirmado</div><div class="stat-v" style="color:var(--ac)">'+conf.toLocaleString('es')+'€</div></div>'+
+    '<div class="stat"><div class="stat-l">Proyectos</div><div class="stat-v">'+D.pipeline.length+'</div></div>'+
+    '</div>'+
+    '<div class="kanban">'+fases.map(function(f){
+      var items=D.pipeline.filter(function(p){return p.fase===f});
+      var total=items.reduce(function(a,b){return a+(b.importe||0)},0);
+      return '<div class="kcol"><div class="kct"><span class="tag '+ftag[f]+'">'+fl[f]+'</span><span class="kct-v">'+total.toLocaleString('es')+'€</span></div>'+
+        items.map(function(p){return '<div class="kcard" onclick="editPipe('+p.id+')"><div style="font-size:12px;font-weight:500;margin-bottom:3px">'+(p.proyecto||p.organismo)+'</div><div style="font-size:11px;color:var(--t3)">'+p.organismo+'</div><div style="font-size:13px;font-weight:600;font-family:DM Mono,monospace;color:var(--bl);margin-top:6px">'+(p.importe||0).toLocaleString('es')+'€</div>'+(p.mes?'<div style="font-size:10px;color:var(--t3);margin-top:3px">Cobro: '+p.mes+'</div>':'')+'</div>'}).join('')+
+        '</div>';
+    }).join('')+'</div>';
+}
+function pipeF(o){o=o||{};return '<div class="fg2"><div class="field"><label>Organismo</label><input type="text" id="fo" value="'+(o.organismo||'')+'"></div><div class="field"><label>Proyecto</label><input type="text" id="fpj" value="'+(o.proyecto||'')+'"></div></div><div class="fg3"><div class="field"><label>Fase</label><select id="ffa"><option value="oportunidad" '+(o.fase==='oportunidad'?'selected':'')+'>Oportunidad</option><option value="negociacion" '+(o.fase==='negociacion'?'selected':'')+'>En negociacion</option><option value="confirmada" '+(o.fase==='confirmada'?'selected':'')+'>Confirmada</option><option value="cobrada" '+(o.fase==='cobrada'?'selected':'')+'>Cobrada</option></select></div><div class="field"><label>Importe euros</label><input type="number" id="fi" value="'+(o.importe||'')+'"></div><div class="field"><label>Mes cobro</label><input type="month" id="fm" value="'+(o.mes||'')+'"></div></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function savePipe(id){var o={organismo:v('fo'),proyecto:v('fpj'),fase:v('ffa'),importe:vn('fi'),mes:v('fm'),notas:v('fno')};if(!o.organismo)return;if(id)Object.assign(D.pipeline.find(function(x){return x.id===id}),o);else D.pipeline.push(Object.assign({id:nid()},o));save();closeM();rPipe(document.getElementById('content'))}
+function editPipe(id){var o=D.pipeline.find(function(x){return x.id===id});openM('Editar proyecto',pipeF(o),mfd('savePipe('+id+')','delPipe('+id+')'))}
+function delPipe(id){D.pipeline=D.pipeline.filter(function(x){return x.id!==id});save();closeM();rPipe(document.getElementById('content'))}
+
+// ── IDEAS ─────────────────────────────────────────────────────────────────────
+var CATS=['Posicionamiento','Nuevo servicio','Contenido','Formacion propia','Subvenciones','Otro'];
+var CTAG={Posicionamiento:'tb','Nuevo servicio':'tac',Contenido:'tpu','Formacion propia':'tac2',Subvenciones:'tam',Otro:'tg'};
+function rIdeas(c){
+  c.innerHTML='<div class="searchbar"><input type="text" id="is" placeholder="Buscar idea..."><select id="ic"><option value="">Todas las categorias</option>'+CATS.map(function(x){return '<option>'+x+'</option>'}).join('')+'</select><select id="iu"><option value="">Todas las urgencias</option><option>Alta</option><option>Media</option><option>Baja</option></select></div>'+
+    '<div class="ideas-g" id="ideas-g"></div>';
+  var upd=function(){
+    var q=v('is').toLowerCase(),cat=v('ic'),urg=v('iu');
+    var rows=D.ideas.filter(function(i){return(!q||i.titulo.toLowerCase().includes(q)||i.cuerpo.toLowerCase().includes(q))&&(!cat||i.categoria===cat)&&(!urg||i.urgencia===urg)});
+    document.getElementById('ideas-g').innerHTML=rows.length===0?'<div class="es" style="grid-column:1/-1"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin ideas</p></div>':
+    rows.map(function(i){return '<div class="icard" onclick="editIdea('+i.id+')"><div style="display:flex;gap:6px"><span class="tag '+CTAG[i.categoria]+'">'+i.categoria+'</span><span class="tag '+(i.urgencia==='Alta'?'tr':i.urgencia==='Media'?'tac2':'tg')+'">'+i.urgencia+'</span></div><div class="it">'+i.titulo+'</div><div class="ib">'+i.cuerpo+'</div></div>'}).join('');
+  };
+  document.getElementById('is').oninput=upd;document.getElementById('ic').onchange=upd;document.getElementById('iu').onchange=upd;upd();
+}
+function ideaF(o){o=o||{};return '<div class="field"><label>Titulo</label><input type="text" id="ft" value="'+(o.titulo||'')+'"></div><div class="fg2"><div class="field"><label>Categoria</label><select id="fcat">'+CATS.map(function(x){return '<option '+(o.categoria===x?'selected':'')+'>'+x+'</option>'}).join('')+'</select></div><div class="field"><label>Urgencia</label><select id="fu"><option '+(o.urgencia==='Alta'?'selected':'')+'>Alta</option><option '+(o.urgencia==='Media'?'selected':'')+'>Media</option><option '+(o.urgencia==='Baja'?'selected':'')+'>Baja</option></select></div></div><div class="field"><label>Descripcion</label><textarea id="fno" style="min-height:80px">'+(o.cuerpo||'')+'</textarea></div>'}
+function saveIdea(id){var o={titulo:v('ft'),categoria:v('fcat'),urgencia:v('fu'),cuerpo:v('fno')};if(!o.titulo)return;if(id)Object.assign(D.ideas.find(function(x){return x.id===id}),o);else D.ideas.push(Object.assign({id:nid()},o));save();closeM();rIdeas(document.getElementById('content'))}
+function editIdea(id){var o=D.ideas.find(function(x){return x.id===id});openM('Editar idea',ideaF(o),mfd('saveIdea('+id+')','delIdea('+id+')'))}
+function delIdea(id){D.ideas=D.ideas.filter(function(x){return x.id!==id});save();closeM();rIdeas(document.getElementById('content'))}
+
+// ── SUBVENCIONES ──────────────────────────────────────────────────────────────
+function rSub(c){
+  c.innerHTML='<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Convocatoria</th><th>Organismo</th><th>Importe max</th><th>Deadline</th><th>Tiempo</th><th>Estado</th><th>Notas</th><th></th></tr></thead><tbody id="sub-body"></tbody></table></div></div>';
+  document.getElementById('sub-body').innerHTML=D.subvenciones.length===0?'<tr><td colspan="8"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin subvenciones</p></div></td></tr>':
+  D.subvenciones.map(function(s){return '<tr><td style="font-weight:500">'+s.nombre+'</td><td><span class="tag tg">'+s.organismo+'</span></td><td style="font-size:12px;font-family:DM Mono,monospace">'+(s.importe?s.importe.toLocaleString('es')+'€':'')+'</td><td style="font-size:12px;font-family:DM Mono,monospace">'+fd(s.deadline)+'</td><td>'+utag(du(s.deadline))+'</td><td><span class="tag '+(s.estado==='abierta'?'tac':s.estado==='presentada'?'tb':'tg')+'">'+s.estado+'</span></td><td style="font-size:12px;color:var(--t2);max-width:150px">'+s.notas+'</td><td><div class="tda"><button class="btn btn-sm" onclick="editSub('+s.id+')">Editar</button><button class="btn btn-sm btn-d" onclick="delSub('+s.id+')">&#215;</button></div></td></tr>'}).join('');
+}
+function subF(o){o=o||{};return '<div class="field"><label>Nombre</label><input type="text" id="fn" value="'+(o.nombre||'')+'"></div><div class="fg3"><div class="field"><label>Organismo convocante</label><input type="text" id="fo" value="'+(o.organismo||'')+'"></div><div class="field"><label>Importe maximo euros</label><input type="number" id="fi" value="'+(o.importe||'')+'"></div><div class="field"><label>Deadline</label><input type="date" id="fd" value="'+(o.deadline||'')+'"></div></div><div class="field"><label>Estado</label><select id="fes"><option value="abierta" '+(o.estado==='abierta'?'selected':'')+'>Abierta</option><option value="cerrada" '+(o.estado==='cerrada'?'selected':'')+'>Cerrada</option><option value="seguimiento" '+(o.estado==='seguimiento'?'selected':'')+'>Seguimiento</option><option value="presentada" '+(o.estado==='presentada'?'selected':'')+'>Presentada</option></select></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function saveSub(id){var o={nombre:v('fn'),organismo:v('fo'),importe:vn('fi'),deadline:v('fd'),estado:v('fes'),notas:v('fno')};if(!o.nombre)return;if(id)Object.assign(D.subvenciones.find(function(x){return x.id===id}),o);else D.subvenciones.push(Object.assign({id:nid()},o));save();closeM();rSub(document.getElementById('content'))}
+function editSub(id){var o=D.subvenciones.find(function(x){return x.id===id});openM('Editar subvencion',subF(o),mfd('saveSub('+id+')','delSub('+id+')'))}
+function delSub(id){D.subvenciones=D.subvenciones.filter(function(x){return x.id!==id});save();closeM();rSub(document.getElementById('content'))}
+
+// ── MIS CURSOS ────────────────────────────────────────────────────────────────
+function rMisCursos(c){
+  c.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px" id="mc-grid"></div>';
+  var g=document.getElementById('mc-grid');
+  if(D.miscursos.length===0){g.innerHTML='<div class="es" style="grid-column:1/-1"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin cursos todavia</p></div>';return}
+  g.innerHTML=D.miscursos.map(function(c){return '<div class="card" style="cursor:pointer" onclick="editMC('+c.id+')">'+
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">'+
+    '<div style="font-size:14px;font-weight:600;flex:1">'+c.nombre+'</div>'+
+    '<span class="tag tac" style="font-size:12px;font-family:DM Mono,monospace;margin-left:8px">'+c.precio.toLocaleString('es')+'€</span>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-bottom:10px"><span class="tag tb">'+c.duracion+'</span><span class="tag tg">'+c.formato+'</span></div>'+
+    '<div style="font-size:11px;color:var(--t2);margin-bottom:6px"><strong style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Dirigido a</strong><br>'+c.dirigido+'</div>'+
+    '<div style="font-size:11px;color:var(--t2)"><strong style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Modulos</strong><br>'+c.modulos+'</div>'+
+    (c.notas?'<div style="margin-top:8px;font-size:11px;color:var(--t3);font-style:italic">'+c.notas+'</div>':'')+
+    '</div>'}).join('');
+}
+function mcF(o){o=o||{};return '<div class="field"><label>Nombre del curso</label><input type="text" id="fn" value="'+(o.nombre||'')+'"></div><div class="fg2"><div class="field"><label>Duracion</label><input type="text" id="fdur" value="'+(o.duracion||'')+'" placeholder="Ej: 10h"></div><div class="field"><label>Precio base euros</label><input type="number" id="fpr" value="'+(o.precio||'')+'"></div></div><div class="fg2"><div class="field"><label>Formato</label><input type="text" id="ffor" value="'+(o.formato||'')+'" placeholder="Presencial / Online"></div><div class="field"><label>Dirigido a</label><input type="text" id="fdir" value="'+(o.dirigido||'')+'" placeholder="Tipo de organismo"></div></div><div class="field"><label>Modulos</label><textarea id="fmod">'+(o.modulos||'')+'</textarea></div><div class="field"><label>Notas</label><textarea id="fno">'+(o.notas||'')+'</textarea></div>'}
+function saveMC(id){var o={nombre:v('fn'),duracion:v('fdur'),precio:vn('fpr'),formato:v('ffor'),dirigido:v('fdir'),modulos:v('fmod'),notas:v('fno')};if(!o.nombre)return;if(id)Object.assign(D.miscursos.find(function(x){return x.id===id}),o);else D.miscursos.push(Object.assign({id:nid()},o));save();closeM();rMisCursos(document.getElementById('content'))}
+function editMC(id){var o=D.miscursos.find(function(x){return x.id===id});openM('Editar curso',mcF(o),mfd('saveMC('+id+')','delMC('+id+')'))}
+function delMC(id){D.miscursos=D.miscursos.filter(function(x){return x.id!==id});save();closeM();rMisCursos(document.getElementById('content'))}
+
+// ── FORMACIONES ───────────────────────────────────────────────────────────────
+var fTab='pendiente';
+function rForm(c){
+  c.innerHTML='<div style="display:flex;gap:4px;background:var(--s2);padding:3px;border-radius:var(--r);width:fit-content;margin-bottom:14px">'+
+    ['pendiente','en curso','completada'].map(function(t){return '<div onclick="setFTab(\''+t+'\')" style="padding:5px 13px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;'+(fTab===t?'background:var(--s);color:var(--t)':'color:var(--t2)')+'" id="ftt-'+t+'">'+{pendiente:'Pendiente','en curso':'En curso',completada:'Completada'}[t]+'</div>'}).join('')+
+    '</div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Nombre del curso</th><th>Descripcion</th><th>Estado</th><th></th></tr></thead><tbody id="form-body"></tbody></table></div></div>';
+  updForm();
+}
+function setFTab(t){fTab=t;render(curTab)}
+function updForm(){
+  var rows=D.formaciones.filter(function(f){return f.estado===fTab});
+  document.getElementById('form-body').innerHTML=rows.length===0?'<tr><td colspan="4"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin formaciones en este estado</p></div></td></tr>':
+  rows.map(function(f){return '<tr><td style="font-weight:500">'+(f.enlace?'<a href="'+f.enlace+'" target="_blank" style="color:var(--bl);text-decoration:none">'+f.nombre+'</a>':f.nombre)+'</td><td style="font-size:12px;color:var(--t2)">'+f.notas+'</td><td><span class="tag '+(f.estado==='en curso'?'tb':f.estado==='completada'?'tac':'tg')+'">'+f.estado+'</span></td><td><div class="tda"><button class="btn btn-sm" onclick="editForm('+f.id+')">Editar</button><button class="btn btn-sm btn-d" onclick="delForm('+f.id+')">&#215;</button></div></td></tr>'}).join('');
+}
+function formF(o){o=o||{};return '<div class="field"><label>Nombre del curso</label><input type="text" id="fn" value="'+(o.nombre||'')+'"></div><div class="field"><label>Enlace (opcional)</label><input type="url" id="fen" value="'+(o.enlace||'')+'" placeholder="https://..."></div><div class="field"><label>Descripcion</label><textarea id="fno">'+(o.notas||'')+'</textarea></div><div class="field"><label>Estado</label><select id="fes"><option value="pendiente" '+(o.estado==='pendiente'?'selected':'')+'>Pendiente</option><option value="en curso" '+(o.estado==='en curso'?'selected':'')+'>En curso</option><option value="completada" '+(o.estado==='completada'?'selected':'')+'>Completada</option></select></div>'}
+function saveForm(id){var o={nombre:v('fn'),enlace:v('fen'),notas:v('fno'),estado:v('fes')};if(!o.nombre)return;if(id)Object.assign(D.formaciones.find(function(x){return x.id===id}),o);else D.formaciones.push(Object.assign({id:nid()},o));save();closeM();render(curTab)}
+function editForm(id){var o=D.formaciones.find(function(x){return x.id===id});openM('Editar formacion',formF(o),mfd('saveForm('+id+')','delForm('+id+')'))}
+function delForm(id){D.formaciones=D.formaciones.filter(function(x){return x.id!==id});save();closeM();render(curTab)}
+
+// ── FACTURAS ──────────────────────────────────────────────────────────────────
+var factNum=1;
+function getFactNum(){var max=D.facturas.reduce(function(a,b){return Math.max(a,b.numero||0)},0);return max+1}
+function fmtFactNum(n){return 'F'+new Date().getFullYear()+'-'+String(n).padStart(3,'0')}
+
+function rFacturas(c){
+  c.innerHTML='<div class="dg2" style="margin-bottom:16px">'+
+    '<div class="card"><div class="sec-t">Generar nueva factura</div>'+
+    '<div class="fg2"><div class="field"><label>Empresa cliente</label><input type="text" id="fac-emp" placeholder="Nombre del cliente" oninput="updFactPreview()" list="emp-list"><datalist id="emp-list">'+Object.keys(EMPRESAS).map(function(k){return '<option value="'+k+'">'+k+'</option>'}).join('')+'</datalist></div><div class="field"><label>Numero de factura</label><input type="text" id="fac-num" placeholder="#1001316" oninput="updFactPreview()"></div></div>'+
+    '<div class="fg2"><div class="field"><label>CIF empresa</label><input type="text" id="fac-cif" oninput="updFactPreview()"></div><div class="field"><label>Direccion empresa</label><input type="text" id="fac-dir" oninput="updFactPreview()"></div></div>'+
+    '<div class="fg2"><div class="field"><label>Fecha</label><input type="date" id="fac-fecha" value="'+new Date().toISOString().slice(0,10)+'" oninput="updFactPreview()"></div><div class="field"><label>Vencimiento pago</label><input type="date" id="fac-venc" oninput="updFactPreview()"></div></div>'+
+    '<hr class="sep"><div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Lineas de factura</div>'+
+    '<div id="lineas-wrap"></div>'+
+    '<button class="btn btn-ghost btn-sm" onclick="addLinea()" style="margin-bottom:10px">+ Anadir linea</button>'+
+    '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p" onclick="generarFactura()">Guardar factura</button><button class="btn" onclick="imprimirFactura()">Imprimir / PDF</button></div>'+
+    '</div>'+
+    '<div id="fact-prev" style="overflow-y:auto;max-height:500px"></div>'+
+    '</div>'+
+    '<hr class="sep"><div class="sec-t">Historial de facturas</div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Numero</th><th>Empresa</th><th>Total</th><th>Fecha</th><th>Cobro</th><th></th></tr></thead><tbody id="fact-hist"></tbody></table></div></div>';
+  lineas=[{desc:'',ph:0,h:0}];
+  rendLineas();
+  updFactPreview();
+  updFactHist();
+}
+
+var lineas=[{desc:'',ph:0,h:0}];
+function addLinea(){lineas.push({desc:'',ph:0,h:0});rendLineas();updFactPreview()}
+function delLinea(i){lineas.splice(i,1);rendLineas();updFactPreview()}
+function rendLineas(){
+  var w=document.getElementById('lineas-wrap');if(!w)return;
+  w.innerHTML=lineas.map(function(l,i){return '<div style="display:grid;grid-template-columns:1fr 80px 60px 80px 28px;gap:6px;margin-bottom:6px;align-items:center">'+
+    '<input type="text" placeholder="Descripcion del curso" value="'+l.desc+'" onchange="lineas['+i+'].desc=this.value;updFactPreview()" style="padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r);font-size:12px;font-family:Outfit,sans-serif">'+
+    '<input type="number" placeholder="€/h" value="'+( l.ph||'')+'" onchange="lineas['+i+'].ph=parseFloat(this.value)||0;updFactPreview()" style="padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r);font-size:12px;font-family:Outfit,sans-serif">'+
+    '<input type="number" placeholder="h" value="'+( l.h||'')+'" onchange="lineas['+i+'].h=parseFloat(this.value)||0;updFactPreview()" style="padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r);font-size:12px;font-family:Outfit,sans-serif">'+
+    '<div style="font-size:12px;font-family:DM Mono,monospace;text-align:right;color:var(--t2)">'+((l.ph*l.h)||0).toFixed(2)+'€</div>'+
+    '<button onclick="delLinea('+i+')" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px">&times;</button>'+
+    '</div>'}).join('');
+}
+
+function updEmpresa(){
+  var emp=v('fac-emp'),dat=EMPRESAS[emp]||{};
+  var ce=document.getElementById('fac-cif');if(ce&&dat.cif)ce.value=dat.cif;
+  var de=document.getElementById('fac-dir');if(de&&dat.dir)de.value=dat.dir;
+}
+// Auto-fill when user picks from datalist
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='fac-emp'){updEmpresa();updFactPreview();}});
+
+function updFactPreview(){
+  var emp=v('fac-emp'),cif=v('fac-cif'),dir=v('fac-dir'),fecha=v('fac-fecha')||new Date().toISOString().slice(0,10),numFac=v('fac-num')||('#'+fmtFactNum(getFactNum()));
+  var prev=document.getElementById('fact-prev');if(!prev)return;
+  if(!emp){prev.innerHTML='<div class="es"><p>Selecciona una empresa para ver la previa</p></div>';return}
+  var subtotal=0;
+  lineas.forEach(function(l){subtotal+=l.ph*l.h});
+  subtotal=Math.round(subtotal*100)/100;
+  var irpf=Math.round(subtotal*.15*100)/100;
+  var total=Math.round((subtotal-irpf)*100)/100;
+  prev.innerHTML='<div class="fact-preview" id="fact-print" style="font-family:Georgia,serif">'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:32px">'+
+    '<div style="font-size:13px;line-height:1.8;color:#333">'+MIS_DATOS.nombre+'<br>DNI '+MIS_DATOS.dni+'<br>'+MIS_DATOS.dir+'</div>'+
+    '<div style="text-align:right;font-size:13px;line-height:1.8;color:#333">Fecha: '+fecha.split('-').reverse().join('/')+'<br>Numero de factura:<br><strong>'+numFac+'</strong></div>'+
+    '</div>'+
+    '<div style="margin-bottom:28px;font-size:13px;line-height:1.8;color:#333"><strong>Factura para:</strong><br>'+emp+'<br>CIF n&ordm; '+cif+'<br>'+dir+'</div>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:28px">'+
+    '<thead><tr style="border-bottom:1px solid #ccc"><th style="text-align:left;padding:8px 0;font-weight:400;color:#666">Descripci&oacute;n</th><th style="text-align:right;padding:8px 0;font-weight:400;color:#666">Precio Hora</th><th style="text-align:right;padding:8px 0;font-weight:400;color:#666">Horas</th><th style="text-align:right;padding:8px 0;font-weight:400;color:#666">Total</th></tr></thead>'+
+    '<tbody>'+lineas.filter(function(l){return l.desc||l.ph||l.h}).map(function(l){var t=Math.round(l.ph*l.h*100)/100;return '<tr><td style="padding:10px 0;border-bottom:1px solid #eee">'+l.desc+'</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid #eee">'+l.ph.toLocaleString('es')+'&euro;</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid #eee">'+l.h+'</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid #eee;font-weight:500">'+t.toLocaleString('es')+'&euro;</td></tr>'}).join('')+
+    '</tbody></table>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:28px">'+
+    '<table style="font-size:13px;border-collapse:collapse;min-width:240px"><tbody>'+
+    '<tr><td style="padding:5px 20px 5px 0;color:#666">Subtotal</td><td style="text-align:right;padding:5px 0">'+subtotal.toLocaleString('es')+'&euro;</td></tr>'+
+    '<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 20px 5px 0;color:#666">&minus; Retenci&oacute;n IRPF (15&nbsp;%)</td><td style="text-align:right;padding:5px 0">'+irpf.toLocaleString('es')+'&euro;</td></tr>'+
+    '<tr><td style="padding:8px 20px 0 0;font-weight:600">Total</td><td style="text-align:right;padding:8px 0 0;font-weight:600;font-size:15px">'+total.toLocaleString('es')+'&euro;</td></tr>'+
+    '</tbody></table></div>'+
+    '<div style="font-size:13px;color:#333;margin-bottom:24px">N Cuenta '+MIS_DATOS.banco+'</div>'+
+    '<div style="border:1px solid #ddd;padding:12px 20px;text-align:center;font-size:12px;color:#666;font-style:italic">Factura exenta de IVA por el art&iacute;culo 20 de la LIVA, apartado Uno 9</div>'+
+    '</div>';
+}
+
+function generarFactura(){
+  var emp=v('fac-emp'),fecha=v('fac-fecha'),venc=v('fac-venc'),numFac=v('fac-num');
+  if(!emp)return alert('Selecciona una empresa');
+  if(!lineas.some(function(l){return l.desc&&l.ph&&l.h}))return alert('Anade al menos una linea con descripcion, precio y horas');
+  var subtotal=lineas.reduce(function(a,l){return a+l.ph*l.h},0);
+  subtotal=Math.round(subtotal*100)/100;
+  var irpf=Math.round(subtotal*.15*100)/100;
+  var total=Math.round((subtotal-irpf)*100)/100;
+  var num=getFactNum();
+  var ref=numFac||fmtFactNum(num);
+  var conc=lineas.filter(function(l){return l.desc}).map(function(l){return l.desc}).join(', ');
+  var fac={id:nid(),numero:num,ref:ref,empresa:emp,concepto:conc,subtotal:subtotal,irpf:irpf,total:total,fecha:fecha,vencimiento:venc,cobrada:false,lineas:JSON.parse(JSON.stringify(lineas))};
+  D.facturas.push(fac);
+  D.cobros.push({id:nid(),facturaRef:ref,empresa:emp,importe:total,vencimiento:venc,cobrada:false,notas:''});
+  save();updFactHist();
+  alert('Factura '+ref+' guardada. Usa Imprimir / PDF para guardarla.');
+}
+
+function imprimirFactura(){
+  var el=document.getElementById('fact-print');
+  if(!el){alert('Genera la previa de factura primero');return}
+  var w=window.open('','_blank','width=800,height:900');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Factura</title><style>body{font-family:Georgia,serif;margin:40px;color:#333}table{width:100%;border-collapse:collapse}th,td{padding:8px 0}*{box-sizing:border-box}</style></head><body>'+el.outerHTML+'</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print()},500);
+}
+
+function updFactHist(){
+  var el=document.getElementById('fact-hist');if(!el)return;
+  el.innerHTML=D.facturas.length===0?'<tr><td colspan="7"><div class="es"><p>Sin facturas emitidas</p></div></td></tr>':
+  D.facturas.slice().reverse().map(function(f){return '<tr><td style="font-family:DM Mono,monospace;font-weight:500">'+f.ref+'</td><td>'+f.empresa+'</td><td style="font-size:12px">'+f.concepto+'</td><td style="font-family:DM Mono,monospace">'+f.total.toLocaleString('es')+'€</td><td style="font-size:12px;font-family:DM Mono,monospace">'+fd(f.fecha)+'</td><td><span class="tag '+(f.cobrada?'tac':'tac2')+'">'+(f.cobrada?'Cobrada':'Pendiente')+'</span></td><td><div class="tda"><button class="btn btn-sm" onclick="toggleCobrada('+f.id+')">'+(f.cobrada?'Desmarcar':'Marcar cobrada')+'</button><button class="btn btn-sm btn-d" onclick="delFactura('+f.id+')">&#215;</button></div></td></tr>'}).join('');
+}
+function delFactura(id){
+  if(!confirm('Eliminar esta factura del historial?'))return;
+  var f=D.facturas.find(function(x){return x.id===id});
+  if(f){D.cobros=D.cobros.filter(function(x){return x.facturaRef!==f.ref});}
+  D.facturas=D.facturas.filter(function(x){return x.id!==id});
+  save();updFactHist();
+}
+function toggleCobrada(id){var f=D.facturas.find(function(x){return x.id===id});if(f){f.cobrada=!f.cobrada;var c=D.cobros.find(function(x){return x.facturaRef===f.ref});if(c)c.cobrada=f.cobrada;save();updFactHist()}}
+
+// ── COBROS ────────────────────────────────────────────────────────────────────
+function rCobros(c){
+  var pend=D.cobros.filter(function(x){return !x.cobrada});
+  var cobr=D.cobros.filter(function(x){return x.cobrada});
+  var totPend=pend.reduce(function(a,b){return a+(b.importe||0)},0);
+  var totCobr=cobr.reduce(function(a,b){return a+(b.importe||0)},0);
+  c.innerHTML='<div class="dg3" style="margin-bottom:16px">'+
+    '<div class="stat"><div class="stat-l">Pendiente de cobro</div><div class="stat-v" style="color:var(--ac2)">'+totPend.toLocaleString('es')+'€</div></div>'+
+    '<div class="stat"><div class="stat-l">Cobrado</div><div class="stat-v" style="color:var(--ac)">'+totCobr.toLocaleString('es')+'€</div></div>'+
+    '<div class="stat"><div class="stat-l">Total facturado</div><div class="stat-v">'+(totPend+totCobr).toLocaleString('es')+'€</div></div>'+
+    '</div>'+
+    '<div class="card" style="padding:0"><div style="overflow-x:auto"><table><thead><tr><th>Factura</th><th>Empresa</th><th>Importe</th><th>Vencimiento</th><th>Estado</th><th></th></tr></thead><tbody>'+
+    (D.cobros.length===0?'<tr><td colspan="6"><div class="es"><div style="font-size:32px;margin-bottom:8px;opacity:.3">○</div><p>Sin cobros registrados</p></div></td></tr>':
+    D.cobros.slice().sort(function(a,b){return (a.cobrada?1:0)-(b.cobrada?1:0)||(du(a.vencimiento)||999)-(du(b.vencimiento)||999)}).map(function(x){
+      var days=du(x.vencimiento);
+      var semaforo=x.cobrada?'tac':days===null?'tg':days<0?'tr':days<=7?'tac2':'tg';
+      return '<tr><td style="font-family:DM Mono,monospace;font-size:12px">'+x.facturaRef+'</td><td>'+x.empresa+'</td><td style="font-family:DM Mono,monospace;font-weight:500">'+x.importe.toLocaleString('es')+'€</td><td style="font-size:12px">'+fd(x.vencimiento)+' '+utag(days)+'</td><td><span class="tag '+semaforo+'">'+(x.cobrada?'Cobrada':days<0?'Vencida':'Pendiente')+'</span></td><td><button class="btn btn-sm" onclick="toggleCobro('+x.id+')">'+(x.cobrada?'Desmarcar':'Marcar cobrado')+'</button></td></tr>';
+    }).join(''))+
+    '</tbody></table></div></div>';
+}
+function toggleCobro(id){var x=D.cobros.find(function(c){return c.id===id});if(x){x.cobrada=!x.cobrada;var f=D.facturas.find(function(f){return f.ref===x.facturaRef});if(f)f.cobrada=x.cobrada;save();rCobros(document.getElementById('content'))}}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function mf(fn){return '<button class="btn" onclick="closeM()">Cancelar</button><button class="btn btn-p" onclick="'+fn+'">Guardar</button>'}
+function mfd(fn,del){return '<button class="btn btn-d" style="margin-right:auto" onclick="'+del+'">Eliminar</button><button class="btn" onclick="closeM()">Cancelar</button><button class="btn btn-p" onclick="'+fn+'">Guardar</button>'}
+
+function doAdd(tab){
+  var map={
+    organismos:function(){openM('Nuevo organismo',orgF(),mf('saveOrg()'))},
+    contactos:function(){openM('Nuevo contacto',contF(),mf('saveCont()'))},
+    propuestas:function(){openM('Nueva propuesta',propF(),mf('saveProp()'))},
+    pipeline:function(){openM('Nuevo proyecto',pipeF(),mf('savePipe()'))},
+    ideas:function(){openM('Nueva idea',ideaF(),mf('saveIdea()'))},
+    subvenciones:function(){openM('Nueva subvencion',subF(),mf('saveSub()'))},
+    miscursos:function(){openM('Nuevo curso',mcF(),mf('saveMC()'))},
+    formaciones:function(){openM('Nueva formacion',formF(),mf('saveForm()'))},
+    facturas:function(){nav('facturas')}
+  };
+  if(map[tab])map[tab]();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('sf-date').textContent=HOY.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+nav('dashboard');
+</script>
